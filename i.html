@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Transfer Progress</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 25px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 30px;
+            background-color: #4caf50;
+            border-radius: 25px;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>انتقال فایل</h1>
+    <button onclick="startTransfer()">شروع انتقال فایل</button>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar">0%</div>
+    </div>
+
+    <div id="status"></div>
+
+    <script>
+        function startTransfer() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "transfer.php", true);
+            xhr.onprogress = function(event) {
+                if (event.lengthComputable) {
+                    var percentComplete = (event.loaded / event.total) * 100;
+                    document.getElementById("progressBar").style.width = percentComplete + "%";
+                    document.getElementById("progressBar").innerHTML = Math.round(percentComplete) + "%";
+                }
+            };
+            xhr.onload = function() {
+                if (xhr.status == 200) {
+                    document.getElementById("status").innerHTML = "انتقال فایل با موفقیت انجام شد!";
+                } else {
+                    document.getElementById("status").innerHTML = "خطا در انتقال فایل!";
+                }
+            };
+            xhr.onerror = function() {
+                document.getElementById("status").innerHTML = "خطا در انتقال فایل!";
+            };
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
